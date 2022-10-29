@@ -2,7 +2,7 @@ import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-class Config(object):
+class AppConfig(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'db086519-96ca-4ffb-8b21-fc8954da3df9'
 
     BLOB_ACCOUNT = os.environ.get('BLOB_ACCOUNT') or 'azdevudcblobstorage'

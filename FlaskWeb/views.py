@@ -5,7 +5,7 @@ Routes and views for the flask application.
 from datetime import datetime
 from flask import render_template, flash, redirect, request, session, url_for
 from werkzeug.urls import url_parse
-from config import Config
+from config import AppConfig
 from FlaskWeb import app, db
 from FlaskWeb.forms import LoginForm, PostForm
 from flask_login import current_user, login_user, logout_user, login_required
@@ -74,10 +74,10 @@ def login():
             next_page = url_for('home')
         return redirect(next_page)
     session["state"] = str(uuid.uuid4())
-    auth_url = _build_auth_url(scopes=Config.SCOPE, state=session["state"])
+    auth_url = _build_auth_url(scopes=AppConfig.SCOPE, state=session["state"])
     return render_template('login.html', title='Sign In', form=form, auth_url=auth_url)
 
-@app.route(Config.REDIRECT_PATH)  # Its absolute URL must match your app's redirect_uri set in AAD
+@app.route(AppConfig.REDIRECT_PATH)  # Its absolute URL must match your app's redirect_uri set in AAD
 def authorized():
     if request.args.get('state') != session.get("state"):
         return redirect(url_for("home"))  # No-OP. Goes back to Index page
@@ -88,7 +88,7 @@ def authorized():
         # Acquire a token from a built msal app, along with the appropriate redirect URI
         result = _build_msal_app(cache=cache).acquire_token_by_authorization_code(
             request.args['code'],
-            scopes=Config.SCOPE,
+            scopes=AppConfig.SCOPE,
             redirect_uri=url_for('authorized', _external=True, _scheme='https')
         )
         
@@ -110,7 +110,7 @@ def logout():
         session.clear()
         # Also logout from your tenant's web session
         return redirect(
-            Config.AUTHORITY + "/oauth2/v2.0/logout" +
+            AppConfig.AUTHORITY + "/oauth2/v2.0/logout" +
             "?post_logout_redirect_uri=" + url_for("login", _external=True))
 
     return redirect(url_for('login'))
@@ -129,7 +129,7 @@ def _save_cache(cache):
 
 def _build_msal_app(cache=None, authority=None):
     # Return a ConfidentialClientApplication
-    return msal.ConfidentialClientApplication(Config.CLIENT_ID, authority=authority or Config.AUTHORITY, client_credential=Config.CLIENT_SECRET, token_cache=cache)
+    return msal.ConfidentialClientApplication(AppConfig.CLIENT_ID, authority=authority or AppConfig.AUTHORITY, client_credential=AppConfig.CLIENT_SECRET, token_cache=cache)
 
 def _build_auth_url(authority=None, scopes=None, state=None):
     # Return the full Auth Request URL with appropriate Redirect URI
