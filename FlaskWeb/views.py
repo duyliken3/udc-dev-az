@@ -20,6 +20,7 @@ imageSourceUrl = 'https://'+ app.config['BLOB_ACCOUNT']  + '.blob.core.windows.n
 @login_required
 def home():
     user = User.query.filter_by(username=current_user.username).first_or_404()
+    print("${current_user.username} login successfully")
     posts = Post.query.all()
     return render_template(
         'index.html',
@@ -105,6 +106,7 @@ def authorized():
 @app.route('/logout')
 def logout():
     logout_user()
+    print("${current_user.username} logout successfully")
     if session.get("user"): # Used MS Login
         # Wipe out user and its token cache from session
         session.clear()
