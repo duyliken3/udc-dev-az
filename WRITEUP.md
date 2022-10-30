@@ -9,38 +9,28 @@
 
 ### Decissions and Comparisons
 
-#### Virtual Machines
+#### Cost
 
-I already have an application running internally. The planning is initially to `migrate` from `bare-metal` machines to `Virtual Machines` in the cloud.
+- The App Service will have lower cost than VM which consume resources, like CPU and memory, even though when the application is not in use.
 
-Software developers team, and infrastructure team, already have experience with the maintenance of the environment, building, continuous integration, and deployment processes.
+#### Availability
 
-Even though Virtual Machine is more expensive than App Service, it will be cheaper to maintain the application in the cloud than in bare-metal machines.
+- Both of VM and App Service have high availability.
 
-### Comparison between Virtual Machines and App Service
+### Scalability
 
-#### Price
-`Virtual Machine` is more expensive than `App Service` because it is still running, consuming resources, like CPU and memory, even though when the application is not in use. 
+- Azure App Service has constraints in terms of scalability. Azure VMs are preferred for apps, which have the scope to expand for the future.
 
-Often to use the `App service` is necessary to pay for a plan. Using the `Virtual Machine` you should pay for usage (pay-as-you-go).  
+#### Solution/Choice for current CMS App
 
-#### Scalability
-`Azure App Service` has constraints in terms of scalability.
-`Azure VMs` are preferred for apps, which have the scope to expand for the future.
+The best option for this CMS App is App Service. It offers less flexibility and less control than VM but I dont need full control of the infrastructure. My goal is just to run a simple python flask webapp.
 
-#### Maintenance
-`Virtual Machine` requires much more time and maintenance than App Services. Using `App service`, developers only need to focus int the technologies used on the application.
-`Virtual Machine` is much better for applications that need more maintainability and changes.
+### Assess app changes that would change your decision.
 
-#### Effort to developing an application
-Using `App Service` is much simpler and faster than developing using `Virtual Machines` 
+Disadvantages of App Service as opposed to VM
 
-## Assess app changes that would change your decision.
-*Detail how the app and any other needs would have to change for you to change your decision in the last section.* 
+- Hardware limitations: maximum of 14GB RAM and 4 vCPU cores per instance
+- Limited set of supported languages
+- Payment for active Service Plan even if application is not running
 
-Given that the application was already `running for many years`, `the environment` and the machines were completely `adapted for the application needs`. To migrate from a bare-metal environment to a VM in the cloud, the team will `need to re-create the environment inside the VM`. The recreation implies in reinstall the operation system, platform and middlewares to support the application, libraries, and frameworks.
-
-In terms of the application, I believe that some changes to optimize the consumption of a resource, like memory, CPU, avoid intensive IO and improve some cache technologies. These changes are necessary because before the migration the application never considered the consumption of resources.
-
-After the migration should be interesting to identify which part of the application can be converted into a module, or service, maybe to be deployed as an `App Service`. 
-
+Should the requirements change in future then the App Service disadvantages listed above would have to be taken in account. E.g. if the web app was to change to an unsupported language then VM would offer the flexibility to install any SW required to run it. Or if the app computational demands grow above the max limit for App Service then a VM with much larger computational capacity could be easily selected.
